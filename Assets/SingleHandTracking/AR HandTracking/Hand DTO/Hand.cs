@@ -5,8 +5,10 @@ namespace MediapipeHandTracking {
         public float currentDepth = 0.1f;
         private Camera cam;
 
+        private static int LANDMARKS_NUM = 1;
+
         public Hand() {
-            landmarks = new Vector3[4];
+            landmarks = new Vector3[LANDMARKS_NUM];
             cam = Camera.main;
         }
 
@@ -16,16 +18,13 @@ namespace MediapipeHandTracking {
 
         public void ParseFrom(float[] arr, bool isHandRectChange, float c) {
             if (null == arr || arr.Length < 63) return;
-            //độ sâu của điểm ở cổ tay
-           
-            for (int i = 0; i < ARHandProcessor.ringPos.Length; i ++) {
-                float xScreen = Screen.width * ((arr[ARHandProcessor.ringPos[i] * 3 + 1] - 0.5f * (1 - c)) / c);
-                float yScreen = Screen.height * (arr[ARHandProcessor.ringPos[i] * 3]);
-                this.landmarks[i] = cam.ScreenToWorldPoint(new Vector3(xScreen, yScreen, arr[ARHandProcessor.ringPos[i] * 3 + 2] / 80 + currentDepth));
-            }
-
+            
+            float xScreen = Screen.width * ((arr[ARHandProcessor.UPPER_JOINT_POS * 3 + 1] - 0.5f * (1 - c)) / c);
+            float yScreen = Screen.height * (arr[ARHandProcessor.UPPER_JOINT_POS * 3]);
+            this.landmarks[0] = cam.ScreenToWorldPoint(new Vector3(xScreen, yScreen, arr[ARHandProcessor.UPPER_JOINT_POS * 3 + 2] / 80 + currentDepth));
+            
             if (landmarksCP == default) {
-                landmarksCP = new Vector3[4];
+                landmarksCP = new Vector3[LANDMARKS_NUM];
                 landmarksCP = (Vector3[])landmarks.Clone();
             } else {
                 // nễu bị rung giữ nguyên landmark cũ
@@ -38,9 +37,7 @@ namespace MediapipeHandTracking {
         }
 
         public bool isVibrate(float deltaVibrate) {
-            for (int i = 0; i < ARHandProcessor.ringPos.Length; i++) {
-                if (Vector3.Distance(landmarksCP[i], landmarks[i]) < deltaVibrate) return true;
-            }
+            if (Vector3.Distance(landmarksCP[0], landmarks[0]) > deltaVibrate) return false;
             return false;
         }
 

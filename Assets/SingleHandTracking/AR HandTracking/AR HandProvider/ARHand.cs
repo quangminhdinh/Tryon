@@ -6,8 +6,10 @@ public class ARHand {
     public float currentDepth = 0f;
     private Camera cam;
 
+    private static int LANDMARKS_NUM = 1;
+
     public ARHand() {
-        landmarks = new Vector3[4];
+        landmarks = new Vector3[LANDMARKS_NUM];
         cam = Camera.main;
     }
 
@@ -18,15 +20,13 @@ public class ARHand {
     public void ParseFrom(float[] arr, float c) {
         if (null == arr || arr.Length < 63) return;
 
-        for (int i = 0; i < ARHandProcessor.ringPos.Length; i ++) {
-            float xScreen = Screen.width * ((arr[ARHandProcessor.ringPos[i] * 3 + 1] - 0.5f * (1 - c)) / c);
-            float yScreen = Screen.height * (arr[ARHandProcessor.ringPos[i] * 3]);
-            this.landmarks[i] = cam.ScreenToWorldPoint(new Vector3(xScreen, yScreen, arr[ARHandProcessor.ringPos[i] * 3 + 2] / 80 + 0.4f));
-            // this.landmarks[i] = cam.ScreenToWorldPoint(new Vector3(500, 500, 0.3f));
-        }
+        float xScreen = Screen.width * ((arr[ARHandProcessor.UPPER_JOINT_POS * 3 + 1] - 0.5f * (1 - c)) / c);
+        float yScreen = Screen.height * (arr[ARHandProcessor.UPPER_JOINT_POS * 3]);
+        this.landmarks[0] = cam.ScreenToWorldPoint(new Vector3(xScreen, yScreen, arr[ARHandProcessor.UPPER_JOINT_POS * 3 + 2] / 80 + 0.4f));
+        // this.landmarks[i] = cam.ScreenToWorldPoint(new Vector3(500, 500, 0.3f));
 
         if (landmarksCP == default) {
-            landmarksCP = new Vector3[4];
+            landmarksCP = new Vector3[LANDMARKS_NUM];
             landmarksCP = (Vector3[])landmarks.Clone();
         } else {
             // nễu bị rung giữ nguyên landmark cũ
@@ -39,9 +39,7 @@ public class ARHand {
     }
 
     public bool isVibrate(float deltaVibrate) {
-        for (int i = 0; i < ARHandProcessor.ringPos.Length; i ++) {
-            if (Vector3.Distance(landmarksCP[i], landmarks[i]) > deltaVibrate) return false;
-        }
+        if (Vector3.Distance(landmarksCP[0], landmarks[0]) > deltaVibrate) return false;
         return true;
     }
 

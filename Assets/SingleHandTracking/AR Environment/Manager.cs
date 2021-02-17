@@ -12,8 +12,7 @@ public class Manager : MonoBehaviour {
     }
     #endregion
 
-    public GameObject HandOnSpace;
-    public RaycastOnPlane RaycastOnPlane;
+    public GameObject LandmarkObj;
 
     public Vector3[] GetHandLandmarks(){
         return GetComponent<ARHandProcessor>().CurrentHand.GetLandmarks();
