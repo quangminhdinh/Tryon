@@ -17,12 +17,12 @@ public class ARHand {
 
     public void ParseFrom(float[] arr, float c) {
         if (null == arr || arr.Length < 63) return;
-        //độ sâu của điểm ở cổ tay
 
         for (int i = 0; i < ARHandProcessor.ringPos.Length; i ++) {
             float xScreen = Screen.width * ((arr[ARHandProcessor.ringPos[i] * 3 + 1] - 0.5f * (1 - c)) / c);
             float yScreen = Screen.height * (arr[ARHandProcessor.ringPos[i] * 3]);
             this.landmarks[i] = cam.ScreenToWorldPoint(new Vector3(xScreen, yScreen, arr[ARHandProcessor.ringPos[i] * 3 + 2] / 80 + 0.4f));
+            // this.landmarks[i] = cam.ScreenToWorldPoint(new Vector3(500, 500, 0.3f));
         }
 
         if (landmarksCP == default) {

@@ -25,7 +25,12 @@ namespace MediapipeHandTracking {
             byte[] frameImage = ImageConversion.EncodeToJPG(m_Texture);
 
             sbyte[] frameImageSigned = Array.ConvertAll(frameImage, b => unchecked((sbyte)b));
+
+            long time = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds();
+            Debug.Log("Converted at: " + time.ToString());
             singleHandMain.Call("setFrame", frameImageSigned);
+            long after = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds();
+            Debug.Log("Done set frame at: " + time.ToString());
         }
 
         void OnDestroy() {

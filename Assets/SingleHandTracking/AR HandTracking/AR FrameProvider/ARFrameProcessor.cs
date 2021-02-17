@@ -22,8 +22,8 @@ public class ARFrameProcessor : MonoBehaviour {
     }
 
     unsafe void convertCPUImage() {
-        XRCameraImage image;
-        if (!cameraManager.TryGetLatestImage(out image)) {
+        XRCpuImage image;
+        if (!cameraManager.TryAcquireLatestCpuImage(out image)) {
             Debug.Log("Cant get image");
             return;
         }
@@ -33,7 +33,7 @@ public class ARFrameProcessor : MonoBehaviour {
             imageRatio = (float)(BETA / ALPHA);
         }
 
-        var conversionParams = new XRCameraImageConversionParams {
+        var conversionParams = new XRCpuImage.ConversionParams {
             // Get the entire image
             inputRect = new RectInt(0, 0, image.width, image.height),
             // Downsample by 2
@@ -41,7 +41,7 @@ public class ARFrameProcessor : MonoBehaviour {
             // Choose RGBA format
             outputFormat = TextureFormat.RGBA32,
             // Flip across the vertical axis (mirror image)
-            transformation = CameraImageTransformation.MirrorY
+            transformation = XRCpuImage.Transformation.MirrorY
         };
 
         int size = image.GetConvertedDataSize(conversionParams);
@@ -60,6 +60,8 @@ public class ARFrameProcessor : MonoBehaviour {
         m_Texture.Apply();
         buffer.Dispose();
         // pass image for mediapipe
+        long time = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds();
+        Debug.Log("Texture loaded at: " + time.ToString());
         handProcessor.addFrameTexture(m_Texture);
     }
 

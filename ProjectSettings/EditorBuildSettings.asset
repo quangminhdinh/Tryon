@@ -12,5 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/TryOn.unity
     guid: cdd32a349c6685a419334f723c7b8b06
   m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: c06e16371c603f6408b05419f2bb0027,
+      type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 7ed33cd452f54f74d9e3b19b793de6db,
       type: 2}
